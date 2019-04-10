@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--这里配置mapper对应包的路径-->
+    <mappers>
+        <package name="org.nocode.timing.mapper"/>
+    </mappers>
+</configuration>
