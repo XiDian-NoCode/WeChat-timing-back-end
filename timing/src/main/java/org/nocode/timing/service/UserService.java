@@ -1,31 +1,12 @@
 package org.nocode.timing.service;
 
-import org.nocode.timing.mapper.UserMapper;
 import org.nocode.timing.pojo.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @Author HanZhao
- * @Description
- * @Date 2019/4/10
- */
-@Service("userService")// 默认首字母小写
-public class UserService {
-
-    private UserMapper userMapper;
-
-    @Autowired
-    // 采用set方法自动注入
-    public void setUserMapper(UserMapper userMapper) {
-        this.userMapper = userMapper;
-    }
+public interface UserService {
 
     // 根据用户名列查询用户列表
-    public List<User> findUserByName(String name) throws Exception {
-        return userMapper.findUserByName(name);
-    }
+    List<User> findUserByName(String name) throws Exception;
 
 }

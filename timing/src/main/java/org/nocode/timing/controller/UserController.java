@@ -19,18 +19,18 @@ import java.util.List;
 @Controller
 public class UserController {
 
-    private UserService userService;
+    private UserService userServiceImpl;
 
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public void setUserService(UserService userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
     }
 
     @RequestMapping(value = "/findUserByName", method = {RequestMethod.GET, RequestMethod.POST})
     public @ResponseBody
         // @ResponseBody可以返回json数据
     List<User> findUserByName(@RequestParam("userName") String userName) throws Exception { // @RequestParam对应前端的post请求的参数名
-        return userService.findUserByName(userName);
+        return userServiceImpl.findUserByName(userName);
     }
 
 }
