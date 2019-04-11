@@ -26,8 +26,8 @@ public class UserServiceImpl implements UserService {
 
     // 根据用户名列查询用户列表
     @Override
-    public List<User> findUserByName(String name) throws Exception {
-        return userMapper.findUserByName(name);
+    public List<User> findUserByName(String userName) throws Exception {
+        return userMapper.findUserByName(userName);
     }
 
 }

@@ -7,6 +7,6 @@ import java.util.List;
 public interface UserService {
 
     // 根据用户名列查询用户列表
-    List<User> findUserByName(String name) throws Exception;
+    List<User> findUserByName(String userName) throws Exception;
 
 }

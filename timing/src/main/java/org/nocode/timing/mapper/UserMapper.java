@@ -12,6 +12,6 @@ import java.util.List;
 public interface UserMapper {
 
     // 根据用户名列查询用户列表，注意此处的名字，参数，返回值要和xml对应
-    List<User> findUserByName(String name) throws Exception;
+    List<User> findUserByName(String userName) throws Exception;
 
 }

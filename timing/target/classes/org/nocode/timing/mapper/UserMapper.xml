@@ -8,7 +8,7 @@
     <!--注意此处的名字，参数，返回值，都要和接口一致-->
     <select id="findUserByName" parameterType="java.lang.String" resultType="org.nocode.timing.pojo.User">
         select *
-        from teacher_info
-        where name like '%${value}%'
+        from time_appointment.user
+        where user_name like '%${value}%'
     </select>
 </mapper>
