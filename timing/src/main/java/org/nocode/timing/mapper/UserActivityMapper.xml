@@ -3,5 +3,9 @@
 <!--使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址-->
 <mapper namespace="org.nocode.timing.mapper.UserActivityMapper">
     <!--注意此处的名字，参数，返回值，都要和接口一致-->
-
+    <select id="selectByUserId" parameterType="java.lang.String" resultType="org.nocode.timing.pojo.UserActivity">
+        SELECT *
+        FROM user_activity
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

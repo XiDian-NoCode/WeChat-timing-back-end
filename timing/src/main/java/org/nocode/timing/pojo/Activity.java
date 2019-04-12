@@ -1,5 +1,6 @@
 package org.nocode.timing.pojo;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -44,16 +45,18 @@ public class Activity {
         this.activityName = activityName == null ? null : activityName.trim();
     }
 
-    public Date getActivityStart() {
-        return activityStart;
+    public String getActivityStart() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(activityStart);
     }
 
     public void setActivityStart(Date activityStart) {
         this.activityStart = activityStart;
     }
 
-    public Date getActivityEnd() {
-        return activityEnd;
+    public String getActivityEnd() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(activityEnd);
     }
 
     public void setActivityEnd(Date activityEnd) {

@@ -12,4 +12,16 @@
         VALUES (#{activityName}, #{activityStart}, #{activityEnd},#{sponsorId});
     </insert>
 
+    <select id="selectByUserId" parameterType="java.lang.String" resultType="org.nocode.timing.pojo.Activity">
+        SELECT *
+        FROM activity
+        WHERE sponsor_id = #{userId}
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="org.nocode.timing.pojo.Activity">
+        SELECT *
+        FROM activity
+        WHERE activity_id = #{activityId}
+    </select>
+
 </mapper>

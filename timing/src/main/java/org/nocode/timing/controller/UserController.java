@@ -1,11 +1,14 @@
 package org.nocode.timing.controller;
 
+import org.nocode.timing.pojo.Activity;
+import org.nocode.timing.pojo.UserActivity;
 import org.nocode.timing.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,4 +62,21 @@ public class UserController {
         return map;
     }
 
+    @RequestMapping(value = "/viewJoinActivity")
+    @ResponseBody
+    public List<UserActivity> viewJoinActivity(@RequestBody Map map) {
+        return userServiceImpl.viewJoinActivity((String) map.get("userId"));
+    }
+
+    @RequestMapping(value = "/viewSponsorActivity")
+    @ResponseBody
+    public List<Activity> viewSponsorActivity(@RequestBody Map map) {
+        return userServiceImpl.viewSponsorActivity((String) map.get("userId"));
+    }
+
+    @RequestMapping(value = "/viewActivityDetail")
+    @ResponseBody
+    public Activity viewActivityDetail(@RequestBody Map map) {
+        return userServiceImpl.viewActivityDetail(Integer.parseInt(map.get("activityId").toString()));
+    }
 }

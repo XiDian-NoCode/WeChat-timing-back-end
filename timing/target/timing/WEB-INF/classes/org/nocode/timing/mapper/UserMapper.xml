@@ -8,4 +8,10 @@
         VALUES (#{userId}, #{userName}, #{userImg});
     </insert>
 
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="org.nocode.timing.pojo.User">
+        SELECT *
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
 </mapper>
