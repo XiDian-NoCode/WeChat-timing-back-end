@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址-->
+<mapper namespace="org.nocode.timing.mapper.UserActivityMapper">
+    <!--注意此处的名字，参数，返回值，都要和接口一致-->
+
+</mapper>

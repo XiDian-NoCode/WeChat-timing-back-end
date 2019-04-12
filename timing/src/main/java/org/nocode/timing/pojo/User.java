@@ -2,7 +2,7 @@ package org.nocode.timing.pojo;
 
 /**
  * @Author HanZhao
- * @Description
+ * @Description 对应user表
  * @Date 2019/4/11
  */
 public class User {

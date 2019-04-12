@@ -2,8 +2,8 @@ package org.nocode.timing.pojo;
 
 /**
  * @Author HanZhao
- * @Description
- * @Date 2019/4/11
+ * @Description 对应user_activity表
+ * @Date 2019/4/12
  */
 public class UserActivity {
     private Integer userActivityId;
@@ -15,8 +15,6 @@ public class UserActivity {
     private String userBusyTime;
 
     private Boolean isJoin;
-
-    private Boolean isSponsor;
 
     private Byte state;
 
@@ -58,14 +56,6 @@ public class UserActivity {
 
     public void setIsJoin(Boolean isJoin) {
         this.isJoin = isJoin;
-    }
-
-    public Boolean getIsSponsor() {
-        return isSponsor;
-    }
-
-    public void setIsSponsor(Boolean isSponsor) {
-        this.isSponsor = isSponsor;
     }
 
     public Byte getState() {

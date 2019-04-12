@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址-->
+<mapper namespace="org.nocode.timing.mapper.ActivityMapper">
+    <!--注意此处的id，参数，返回值，都要和接口中方法一致-->
+    <insert id="insert" parameterType="org.nocode.timing.pojo.Activity">
+        <selectKey keyProperty="activityId" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+
+        INSERT INTO activity (activity_name, activity_start, activity_end,sponsor_id)
+        VALUES (#{activityName}, #{activityStart}, #{activityEnd},#{sponsorId});
+    </insert>
+
+</mapper>

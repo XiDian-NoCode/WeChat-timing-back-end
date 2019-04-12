@@ -4,8 +4,8 @@ import java.util.Date;
 
 /**
  * @Author HanZhao
- * @Description
- * @Date 2019/4/11
+ * @Description 对应activity表
+ * @Date 2019/4/12
  */
 public class Activity {
     private Integer activityId;
@@ -25,6 +25,8 @@ public class Activity {
     private String totalBusyTime;
 
     private Byte schedule;
+
+    private String sponsorId;
 
     public Integer getActivityId() {
         return activityId;
@@ -96,5 +98,13 @@ public class Activity {
 
     public void setSchedule(Byte schedule) {
         this.schedule = schedule;
+    }
+
+    public String getSponsorId() {
+        return sponsorId;
+    }
+
+    public void setSponsorId(String sponsorId) {
+        this.sponsorId = sponsorId == null ? null : sponsorId.trim();
     }
 }

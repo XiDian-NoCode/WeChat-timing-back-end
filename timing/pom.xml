@@ -186,6 +186,19 @@
             <artifactId>spring-webmvc</artifactId>
             <version>4.3.18.RELEASE</version>
         </dependency>
+
+        <!--小程序获取用户信息需要的依赖包-->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.60</version>
+        </dependency>
+
     </dependencies>
 
     <build>

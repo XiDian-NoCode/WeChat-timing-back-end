@@ -1,20 +1,17 @@
 package org.nocode.timing.controller;
 
-import org.nocode.timing.pojo.User;
 import org.nocode.timing.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author HanZhao
  * @Description
- * @Date 2019/4/10
+ * @Date 2019/4/12
  */
 @Controller
 public class UserController {
@@ -26,11 +23,40 @@ public class UserController {
         this.userServiceImpl = userServiceImpl;
     }
 
-    @RequestMapping(value = "/findUserByName", method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody
-        // @ResponseBody可以返回json数据
-    List<User> findUserByName(@RequestParam("userName") String userName) throws Exception { // @RequestParam对应前端的post请求的参数名
-        return userServiceImpl.findUserByName(userName);
+    // 登陆，返回用户的openid
+    @RequestMapping(value = "/login")
+    @ResponseBody
+    public Map login(@RequestBody Map map) throws Exception {
+        String code = (String) map.get("code");
+        String encryptedData = (String) map.get("encryptedData");
+        String iv = (String) map.get("iv");
+        map = new HashMap();
+
+        // 登录凭证不能为空
+        if (code == null || code.length() == 0) {
+            map.put("status", 0);
+            map.put("msg", "code不能为空");
+            return map;
+        }
+
+        // 获取
+        String openid = userServiceImpl.login(code, encryptedData, iv);
+
+        map.put("status", 1);
+        map.put("openId", openid);
+        return map;
+    }
+
+    // 创建活动，返回活动ID
+    @RequestMapping(value = "/createActivity")
+    @ResponseBody
+    public Map createActivity(@RequestBody Map map) throws Exception {
+        // 生成一个状态码，告诉前端提交成功
+        int state = userServiceImpl.createActivity((String) map.get("activityName"), (String) map.get("activityStart"), (String) map.get("activityEnd"), (String) map.get("sponsorId"));
+        // 用map存自动转换成json格式
+        map = new HashMap();
+        map.put("activityId", state);
+        return map;
     }
 
 }

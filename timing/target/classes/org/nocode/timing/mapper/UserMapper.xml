@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!--这里是需要写sql的地方，要注意id和mapper接口方法名要一致-->
-<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离
-	注意：使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址
--->
+<!--使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址-->
 <mapper namespace="org.nocode.timing.mapper.UserMapper">
-    <!--注意此处的名字，参数，返回值，都要和接口一致-->
-    <select id="findUserByName" parameterType="java.lang.String" resultType="org.nocode.timing.pojo.User">
-        select *
-        from time_appointment.user
-        where user_name like '%${value}%'
-    </select>
+    <!--注意此处的id，参数，返回值，都要和接口一致-->
+    <insert id="insert" parameterType="org.nocode.timing.pojo.User">
+        INSERT INTO user (user_id, user_name, user_img)
+        VALUES (#{userId}, #{userName}, #{userImg});
+    </insert>
+
 </mapper>
