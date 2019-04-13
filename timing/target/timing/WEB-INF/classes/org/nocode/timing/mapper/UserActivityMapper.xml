@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.nocode.timing.mapper.UserActivityMapper">
+    <!-- int insertUserActivity(UserActivity userActivity); -->
+    <insert id="insertUserActivity" useGeneratedKeys="true" keyColumn="user_activity_id" keyProperty="userActivityId" parameterType="UserActivity">
+        INSERT INTO
+        `user_activity`
+        (activity_id, user_id, user_busy_time, is_join, state)
+        VALUES
+        (#{activityId},#{userId},#{userBusyTime},#{isJoin},#{state})
+    </insert>
+
+    <!-- List<UserActivity> queryUserActivity(UserActivity userActivity); -->
+    <select id="queryUserActivity" parameterType="UserActivity" resultType="UserActivity">
+        SELECT `user_activity_id`, `activity_id`, `user_id`, `user_busy_time`, `is_join`, `state`
+        FROM `user_activity`
+        <where>
+            <if test="userActivityId != null">
+                and `user_activity_id`=#{userActivityId}
+            </if>
+            <if test="activityId != null">
+                and `activity_id`=#{activityId}
+            </if>
+            <if test="userId != null">
+                and `user_id`=#{userId}
+            </if>
+            <if test="userBusyTime != null">
+                and `user_busy_time`=#{userBusyTime}
+            </if>
+            <if test="isJoin != null">
+                and `is_join`=#{isJoin}
+            </if>
+            <if test="state != null">
+                and `state`=#{state}
+            </if>
+        </where>
+    </select>
+</mapper>

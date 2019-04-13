@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.nocode.timing.mapper.ActivityMapper">
+    <!-- int updateActivityTimeByActivityId(Activity activity); -->
+    <update id="updateActivityTimeByActivityId" parameterType="Activity">
+        UPDATE `activity`
+        <set>
+            <if test="activityTime!=null">activity_time=#{activityTime},</if>
+            activity_state = 1
+        </set>
+        WHERE activity_id=#{activityId}
+    </update>
+</mapper>

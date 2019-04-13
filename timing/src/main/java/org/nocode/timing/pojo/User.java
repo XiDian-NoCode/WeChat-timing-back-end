@@ -2,87 +2,37 @@ package org.nocode.timing.pojo;
 
 /**
  * @Author HanZhao
- * @Description
- * @Date 2019/4/10
+ * @Description 对应user表
+ * @Date 2019/4/11
  */
 public class User {
+    private String userId;
 
-    /*此处和数据库字段保持一致*/
-    private int id;
-    private String name;
-    private String school;
-    private String profession;
-    private String url;
-    private String research;
-    private String small_class;
+    private String userName;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", school='" + school + '\'' +
-                ", profession='" + profession + '\'' +
-                ", url='" + url + '\'' +
-                ", research='" + research + '\'' +
-                ", small_class='" + small_class + '\'' +
-                '}';
+    private String userImg;
+
+    public String getUserId() {
+        return userId;
     }
 
-    public int getId() {
-        return id;
+    public void setUserId(String userId) {
+        this.userId = userId == null ? null : userId.trim();
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getUserName() {
+        return userName;
     }
 
-    public String getName() {
-        return name;
+    public void setUserName(String userName) {
+        this.userName = userName == null ? null : userName.trim();
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getUserImg() {
+        return userImg;
     }
 
-    public String getSchool() {
-        return school;
+    public void setUserImg(String userImg) {
+        this.userImg = userImg == null ? null : userImg.trim();
     }
-
-    public void setSchool(String school) {
-        this.school = school;
-    }
-
-    public String getProfession() {
-        return profession;
-    }
-
-    public void setProfession(String profession) {
-        this.profession = profession;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getResearch() {
-        return research;
-    }
-
-    public void setResearch(String research) {
-        this.research = research;
-    }
-
-    public String getSmall_class() {
-        return small_class;
-    }
-
-    public void setSmall_class(String small_class) {
-        this.small_class = small_class;
-    }
-
 }
