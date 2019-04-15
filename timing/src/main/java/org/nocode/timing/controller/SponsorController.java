@@ -35,13 +35,6 @@ public class SponsorController {
         return null;
     }
 
-    // 通知成员
-    @RequestMapping("/informmember")
-    @ResponseBody
-    public String informMember() {
-        return null;
-    }
-
     /**
      * @param map : 接收json格式参数
      * activityId:总表活动id
@@ -107,10 +100,19 @@ public class SponsorController {
      */
     @RequestMapping("/informmember")
     @ResponseBody
-    public Map<String, String> informMember(@RequestBody Map<String, String> map) {
-        Map<String, String> resultMap = new HashMap<>();
+    public Map<String, Object> informMember(@RequestBody Map<String, String> map) {
+        Map<String, Object> resultMap = new HashMap<>();
         int activityId= Integer.parseInt(map.get("activityId"));
-        return resultMap;
+        List<User> userList = sponsorService.informMember(activityId);
+        if(userList != null) {
+            resultMap.put("success","success");
+            resultMap.put("userList", userList);
+            return resultMap;
+        } else {
+            resultMap.put("success","error");
+            return resultMap;
+        }
+
     }
 
 }
