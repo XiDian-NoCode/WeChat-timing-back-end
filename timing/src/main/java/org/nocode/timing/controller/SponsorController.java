@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class SponsorController {
 
     /**
      * inviteMember(先写成空的，看后续)
-     * inforMenber
+     * informMember
      * checkMember(查看某个活动中某一单元格参与的人)
      * commitFinaltime（发起人提交活动时间)
      */
@@ -82,18 +83,34 @@ public class SponsorController {
      *      根据 `activityId` 在总表中 更新 `activity_time` 和 `activity_state`=1
      *      然后在 分表 中,根据 `activity_id` + `state`=1 + `is_join`=1 更新其 `state`=2
      *                    根据 `activity_id` + `state`=0 + `is_join`=0 更新其 `state`=3
-     *   controller层"
+     *   controller层:
      *      调用 service 层方法,返回结果是否成功
      *
      */
     @RequestMapping("/commitfinaltime")
     @ResponseBody
-    public String commitFinalTime(@RequestBody Map<String, String> map) {
+    public Map<String, String> commitFinalTime(@RequestBody Map<String, String> map) {
+        Map<String, String> resultMap = new HashMap<>();
         int activityId= Integer.parseInt(map.get("activityId"));
         String activityTime = map.get("activityTime");
-        return null;
+        String result = sponsorService.commitFinalTime(activityId, activityTime);
+        resultMap.put("success", result);
+        return resultMap;
     }
 
-
+    /**
+     * @param map
+     * @return
+     * 流程:
+     *   service层:
+     *      根据 activityId 查询 分表 中的数据,还要求 `is_join`=1, `state`=2
+     */
+    @RequestMapping("/informmember")
+    @ResponseBody
+    public Map<String, String> informMember(@RequestBody Map<String, String> map) {
+        Map<String, String> resultMap = new HashMap<>();
+        int activityId= Integer.parseInt(map.get("activityId"));
+        return resultMap;
+    }
 
 }

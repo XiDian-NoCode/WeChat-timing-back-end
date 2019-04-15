@@ -3,5 +3,36 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.nocode.timing.mapper.ActivityMapper">
+    <!-- int updateActivityTimeByActivityId(Activity activity); -->
+    <update id="updateActivityTimeByActivityId" parameterType="Activity">
+        UPDATE `activity`
+        <set>
+            <if test="activityTime!=null">activity_time=#{activityTime},</if>
+            <if test="activityState!=null">activity_state=#{activityState},</if>
+            <if test="activityMembers!=null">activity_members=#{activityMembers},</if>
+            <if test="totalBusyTime!=null">total_busy_time=#{totalBusyTime},</if>
+        </set>
+        WHERE activity_id=#{activityId}
+    </update>
 
+    <!-- List<Activity> queryActivity(Activity activity); -->
+    <select id="queryActivity" parameterType="Activity" resultType="Activity">
+        SELECT
+        `activity_id`,
+        `activity_name`,
+        `activity_start`,
+        `activity_end`,
+        `activity_time`,
+        `activity_state`,
+        `activity_members`,
+        `total_busy_time`,
+        `schedule`,
+        `sponsor_id`
+        FROM `activity`
+        <where>
+            <if test="activityId != null">
+                and `activity_id`=#{activityId}
+            </if>
+        </where>
+    </select>
 </mapper>

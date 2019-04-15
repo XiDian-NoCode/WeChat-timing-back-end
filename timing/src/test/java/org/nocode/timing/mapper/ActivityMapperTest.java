@@ -16,6 +16,8 @@ public class ActivityMapperTest extends BaseTest {
         Activity activity = new Activity();
         activity.setActivityId(1);
         activity.setActivityTime("1995");
+        byte state = 2;
+        activity.setActivityState(state);
         int i = activityMapper.updateActivityTimeByActivityId(activity);
         assertEquals(1,i);
     }

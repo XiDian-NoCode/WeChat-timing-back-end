@@ -37,4 +37,29 @@
             </if>
         </where>
     </select>
+
+    <!-- int updateUserActivity(UserActivity userActivity); -->
+    <update id="updateUserActivity" parameterType="UserActivity">
+        UPDATE `user_activity`
+      <set>
+          <if test="state!=null">`state`=#{state},</if>
+      </set>
+      <where>
+          <if test="activityId!=null">AND `activity_id`=#{activityId}</if>
+          <if test="isJoin!=null">AND `is_join`=#{isJoin}</if>
+      </where>
+    </update>
+
+    <!-- int updateUserActivityForCommitMyTime(UserActivity userActivity); -->
+    <update id="updateUserActivityForCommitMyTime" parameterType="UserActivity">
+        UPDATE `user_activity`
+        <set>
+            <if test="state!=null">`state`=#{state},</if>
+            <if test="userBusyTime!=null">`user_busy_time`=#{userBusyTime},</if>
+            <if test="isJoin!=null">`is_join`=#{isJoin},</if>
+        </set>
+        <where>
+            <if test="userActivityId!=null">AND `user_activity_id`=#{userActivityId}</if>
+        </where>
+    </update>
 </mapper>

@@ -7,4 +7,5 @@ import java.util.List;
 public interface SponsorService {
     List<User> checkMember(int activityId, String userId, int index, int num);
     String commitFinalTime(int activityId, String activityTime);
+    List<User> informMember(int activityId);
 }

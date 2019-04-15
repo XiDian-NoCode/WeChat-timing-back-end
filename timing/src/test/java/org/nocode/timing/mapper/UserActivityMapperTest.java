@@ -28,6 +28,7 @@ public class UserActivityMapperTest extends BaseTest {
     }
 
     @Test
+    @Ignore
     public void testQueryUserActivity() {
         UserActivity userActivity = new UserActivity();
         userActivity.setActivityId(24);
@@ -39,5 +40,10 @@ public class UserActivityMapperTest extends BaseTest {
         for(UserActivity u:userActivities) {
             System.out.println(u.getUserBusyTime());
         }
+    }
+
+    @Test
+    public void testUpdateUserActivity() {
+
     }
 }
