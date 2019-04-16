@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author HanZhao
@@ -119,6 +120,47 @@ public class UserServiceImpl implements UserService {
     @Override
     public Activity viewActivityDetail(Integer activityId) {
         return activityMapper.selectByPrimaryKey(activityId);
+    }
+
+    @Override
+    public Object clickInviteLink(String code, String encryptedData, String iv, Integer activityId) throws IOException {
+        // 首先调用登陆服务，得到用户id
+        String openid = login(code, encryptedData, iv);
+        // 去总表中查询对应活动信息
+        Activity activity = activityMapper.selectByPrimaryKey(activityId);
+        UserActivity userActivity = userActivityMapper.selectByUserIdAndActivityID(openid, activityId);
+        // 如果不是发起人点击，则分表会有记录
+        if (userActivity != null) {
+            // 构造一个局部内部类
+            class Inner {
+                Activity activity;
+                UserActivity userActivity;
+
+                public Inner(Activity activity, UserActivity userActivity) {
+                    this.activity = activity;
+                    this.userActivity = userActivity;
+                }
+
+                public Activity getActivity() {
+                    return activity;
+                }
+
+                public void setActivity(Activity activity) {
+                    this.activity = activity;
+                }
+
+                public UserActivity getUserActivity() {
+                    return userActivity;
+                }
+
+                public void setUserActivity(UserActivity userActivity) {
+                    this.userActivity = userActivity;
+                }
+            }
+            return new Inner(activity, userActivity);
+        } else {
+            return activity;
+        }
     }
 
 }

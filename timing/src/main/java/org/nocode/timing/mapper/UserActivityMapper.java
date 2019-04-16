@@ -14,4 +14,7 @@ public interface UserActivityMapper {
 
     // 通过用户id查找用户参与的活动
     List<UserActivity> selectByUserId(String userId);
+
+    // 通过用户id和活动id查找用户参与的活动
+    UserActivity selectByUserIdAndActivityID(@Param("userId") String userId, @Param("activityId") Integer activityId);
 }

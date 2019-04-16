@@ -62,21 +62,35 @@ public class UserController {
         return map;
     }
 
+    // 查看我参与的活动
     @RequestMapping(value = "/viewJoinActivity")
     @ResponseBody
     public List<UserActivity> viewJoinActivity(@RequestBody Map map) {
         return userServiceImpl.viewJoinActivity((String) map.get("userId"));
     }
 
+    // 查看我发起的活动
     @RequestMapping(value = "/viewSponsorActivity")
     @ResponseBody
     public List<Activity> viewSponsorActivity(@RequestBody Map map) {
         return userServiceImpl.viewSponsorActivity((String) map.get("userId"));
     }
 
+    // 查看某个活动细节
     @RequestMapping(value = "/viewActivityDetail")
     @ResponseBody
     public Activity viewActivityDetail(@RequestBody Map map) {
         return userServiceImpl.viewActivityDetail(Integer.parseInt(map.get("activityId").toString()));
+    }
+
+    // 点击邀请链接
+    @RequestMapping(value = "/clickInviteLink")
+    @ResponseBody
+    public Object clickInviteLink(@RequestBody Map map) throws Exception {
+        String code = (String) map.get("code");
+        String encryptedData = (String) map.get("encryptedData");
+        String iv = (String) map.get("iv");
+        Integer activityId = Integer.parseInt(map.get("activityId").toString());
+        return userServiceImpl.clickInviteLink(code, encryptedData, iv, activityId);
     }
 }

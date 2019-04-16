@@ -27,4 +27,7 @@ public interface UserService {
     // 查看某个活动细节
     Activity viewActivityDetail(Integer activityId);
 
+    // 点击邀请链接
+    Object clickInviteLink(String code, String encryptedData, String iv, Integer activityId) throws Exception;
+
 }
