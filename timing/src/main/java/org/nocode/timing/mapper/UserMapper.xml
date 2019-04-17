@@ -9,6 +9,19 @@
         `user_id`,`user_name`,`user_img`
         FROM `user`
         WHERE `user_id` = #{userId}
+	</select>
+
+	<!--韩钊-->
+    <!--注意此处的id，参数，返回值，都要和接口一致-->
+    <insert id="insert" parameterType="org.nocode.timing.pojo.User">
+        INSERT INTO user (user_id, user_name, user_img)
+        VALUES (#{userId}, #{userName}, #{userImg});
+    </insert>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="org.nocode.timing.pojo.User">
+        SELECT *
+        FROM user
+        WHERE user_id = #{userId}
     </select>
 
 </mapper>

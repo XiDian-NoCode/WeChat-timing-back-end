@@ -66,3 +66,4 @@ public class UserActivity {
         this.state = state;
     }
 }
+

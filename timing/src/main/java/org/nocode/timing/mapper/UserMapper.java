@@ -8,4 +8,12 @@ public interface UserMapper {
      * @return
      */
     User queryUserById(String userId);
+
+	//Author HanZhao
+    // 插入新用户
+    int insert(User user);
+
+    // 查找用户
+    User selectByPrimaryKey(String userId);
+
 }

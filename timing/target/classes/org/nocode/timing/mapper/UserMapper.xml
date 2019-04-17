@@ -9,6 +9,16 @@
         `user_id`,`user_name`,`user_img`
         FROM `user`
         WHERE `user_id` = #{userId}
-    </select>
 
+    <!--韩钊-->
+    <insert id="insert" parameterType="org.nocode.timing.pojo.User">
+        INSERT INTO user (user_id, user_name, user_img)
+        VALUES (#{userId}, #{userName}, #{userImg});
+    </insert>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="org.nocode.timing.pojo.User">
+        SELECT *
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

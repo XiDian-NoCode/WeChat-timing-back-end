@@ -1,5 +1,7 @@
 package org.nocode.timing.mapper;
 
+
+import org.apache.ibatis.annotations.Param;
 import org.nocode.timing.pojo.UserActivity;
 
 import java.util.List;
@@ -32,4 +34,11 @@ public interface UserActivityMapper {
      * @return
      */
     int updateUserActivityForCommitMyTime(UserActivity userActivity);
+
+	// Author HanZhao
+    // 通过用户id查找用户参与的活动
+    List<UserActivity> selectByUserId(String userId);
+
+    // 通过用户id和活动id查找用户参与的活动
+    UserActivity selectByUserIdAndActivityID(@Param("userId") String userId, @Param("activityId") Integer activityId);
 }

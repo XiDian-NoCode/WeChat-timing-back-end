@@ -62,4 +62,18 @@
             <if test="userActivityId!=null">AND `user_activity_id`=#{userActivityId}</if>
         </where>
     </update>
+
+    <!--韩钊-->
+    <select id="selectByUserId" parameterType="java.lang.String" resultType="org.nocode.timing.pojo.UserActivity">
+        SELECT *
+        FROM user_activity
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectByUserIdAndActivityID" resultType="org.nocode.timing.pojo.UserActivity">
+        SELECT *
+        FROM user_activity
+        WHERE user_id = #{userId}
+          AND activity_id = #{activityId}
+    </select>
 </mapper>
