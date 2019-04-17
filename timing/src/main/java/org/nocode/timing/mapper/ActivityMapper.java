@@ -4,13 +4,15 @@ import org.nocode.timing.pojo.Activity;
 
 import java.util.List;
 
-/**
- * @Author HanZhao
- * @Description 对activity表的增删改查
- * @Date 2019/4/12
- */
-public interface ActivityMapper {
 
+public interface ActivityMapper {
+	// 潘磊
+    // 更新
+    int updateActivityTimeByActivityId(Activity activity);
+    // 查询
+    List<Activity> queryActivity(Activity activity);
+
+	// 韩钊
     // 总表中插入一条活动记录，返回活动id
     int insert(Activity activity);
 
