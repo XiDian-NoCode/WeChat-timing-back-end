@@ -54,10 +54,19 @@ public class UserController {
     @RequestMapping(value = "/createActivity")
     @ResponseBody
     public Map createActivity(@RequestBody Map map) throws Exception {
-        // 生成一个状态码，告诉前端提交成功
-        int state = userServiceImpl.createActivity((String) map.get("activityName"), (String) map.get("activityStart"), (String) map.get("activityEnd"), (String) map.get("sponsorId"));
-        // 用map存自动转换成json格式
+        String activityName = (String) map.get("activityName");
+        String activityStart = map.get("activityStart").toString();
+        String activityEnd = map.get("activityEnd").toString();
+        String sponsorId = map.get("sponsorId").toString();
         map = new HashMap();
+        int state = -1;
+        if (activityName == null || activityName.length() == 0) {
+            map.put("activityId", state);
+            return map;
+        }
+        // 告诉前端创建成功
+        state = userServiceImpl.createActivity(activityName, activityStart, activityEnd, sponsorId);
+        // 用map存自动转换成json格式
         map.put("activityId", state);
         return map;
     }
@@ -91,6 +100,13 @@ public class UserController {
         String encryptedData = (String) map.get("encryptedData");
         String iv = (String) map.get("iv");
         Integer activityId = Integer.parseInt(map.get("activityId").toString());
+        // 登录凭证不能为空
+        if (code == null || code.length() == 0) {
+            map = new HashMap();
+            map.put("status", 0);
+            map.put("msg", "code不能为空");
+            return map;
+        }
         return userServiceImpl.clickInviteLink(code, encryptedData, iv, activityId);
     }
 }
