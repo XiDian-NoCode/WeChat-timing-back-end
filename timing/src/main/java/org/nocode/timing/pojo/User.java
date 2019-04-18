@@ -1,11 +1,12 @@
 package org.nocode.timing.pojo;
 
 /**
- * @Author HanZhao
- * @Description 对应user表
- * @Date 2019/4/11
+ * @Author HanZhao and PanLei
+ * @Description 对应user表的实体类
+ * @Date 2019/4/18
  */
 public class User {
+
     private String userId;
 
     private String userName;
@@ -35,4 +36,5 @@ public class User {
     public void setUserImg(String userImg) {
         this.userImg = userImg == null ? null : userImg.trim();
     }
+
 }

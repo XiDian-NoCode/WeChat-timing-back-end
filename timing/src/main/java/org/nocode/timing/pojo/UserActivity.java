@@ -1,11 +1,12 @@
 package org.nocode.timing.pojo;
 
 /**
- * @Author HanZhao
- * @Description 对应user_activity表
- * @Date 2019/4/12
+ * @Author HanZhao and PanLei
+ * @Description 对应user_activity表的实体类
+ * @Date 2019/4/18
  */
 public class UserActivity {
+
     private Integer userActivityId;
 
     private Integer activityId;
@@ -65,5 +66,5 @@ public class UserActivity {
     public void setState(Byte state) {
         this.state = state;
     }
-}
 
+}

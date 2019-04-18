@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 发起人相关操作处理
+ * @Author PanLei
+ * @Description 发起人相关操作
+ * @Date 2019/4/18
  */
 @Controller
 @RequestMapping("/sponsor")
@@ -37,26 +39,25 @@ public class SponsorController {
 
     /**
      * @param map : 接收json格式参数
-     * activityId:总表活动id
-     * sponsorId:用户id
-     * index:单元格索引
-     * num :人数
-     * @return
-     * 功能: 发起人 点击 我发起的活动 中的 某一个已经确定活动时间 的活动, 点击某一个显示有几个人有事的单元格 查看有事的人哪几位
+     *            activityId:总表活动id
+     *            sponsorId:用户id
+     *            index:单元格索引
+     *            num :人数
+     * @return 功能: 发起人 点击 我发起的活动 中的 某一个已经确定活动时间 的活动, 点击某一个显示有几个人有事的单元格 查看有事的人哪几位
      * 流程:
-     *  service层
-     *    根据 `activityId` + `is_join`=1 + `state`=2 查询到 分表 中的 数据列表
-     *    对活动列表遍历,获取`user_busy_time`,根据index定位到具体的,看它是否为 '1',是的话就保存到 user列表
-     *  controller层
-     *    调用 service 层方法,获取到最终的  user列表,返回给 前端
+     * service层
+     * 根据 `activityId` + `is_join`=1 + `state`=2 查询到 分表 中的 数据列表
+     * 对活动列表遍历,获取`user_busy_time`,根据index定位到具体的,看它是否为 '1',是的话就保存到 user列表
+     * controller层
+     * 调用 service 层方法,获取到最终的  user列表,返回给 前端
      */
     @RequestMapping("/checkmember")
     @ResponseBody
     public List<User> checkMember(@RequestBody Map<String, String> map) {
-        int activityId= Integer.parseInt(map.get("activityId"));
+        int activityId = Integer.parseInt(map.get("activityId"));
         String sponsorId = map.get("sponsorId");
-        int index= Integer.parseInt(map.get("index"));
-        int num= Integer.parseInt(map.get("num"));
+        int index = Integer.parseInt(map.get("index"));
+        int num = Integer.parseInt(map.get("num"));
 
         List<User> userList = sponsorService.checkMember(activityId, sponsorId, index, num);
         return userList;
@@ -68,23 +69,21 @@ public class SponsorController {
 
     /**
      * @param map : 接收json格式参数
-     * String activityTime : 所选活动时间的单元格,可以多个
-     * int activityId:总表活动id
-     * @return
-     * 流程:
-     *   service层:
-     *      根据 `activityId` 在总表中 更新 `activity_time` 和 `activity_state`=1
-     *      然后在 分表 中,根据 `activity_id` + `state`=1 + `is_join`=1 更新其 `state`=2
-     *                    根据 `activity_id` + `state`=0 + `is_join`=0 更新其 `state`=3
-     *   controller层:
-     *      调用 service 层方法,返回结果是否成功
-     *
+     *            String activityTime : 所选活动时间的单元格,可以多个
+     *            int activityId:总表活动id
+     * @return 流程:
+     * service层:
+     * 根据 `activityId` 在总表中 更新 `activity_time` 和 `activity_state`=1
+     * 然后在 分表 中,根据 `activity_id` + `state`=1 + `is_join`=1 更新其 `state`=2
+     * 根据 `activity_id` + `state`=0 + `is_join`=0 更新其 `state`=3
+     * controller层:
+     * 调用 service 层方法,返回结果是否成功
      */
     @RequestMapping("/commitfinaltime")
     @ResponseBody
     public Map<String, String> commitFinalTime(@RequestBody Map<String, String> map) {
         Map<String, String> resultMap = new HashMap<>();
-        int activityId= Integer.parseInt(map.get("activityId"));
+        int activityId = Integer.parseInt(map.get("activityId"));
         String activityTime = map.get("activityTime");
         String result = sponsorService.commitFinalTime(activityId, activityTime);
         resultMap.put("success", result);
@@ -93,26 +92,24 @@ public class SponsorController {
 
     /**
      * @param map
-     * @return
-     * 流程:
-     *   service层:
-     *      根据 activityId 查询 分表 中的数据,还要求 `is_join`=1, `state`=2
+     * @return 流程:
+     * service层:
+     * 根据 activityId 查询 分表 中的数据,还要求 `is_join`=1, `state`=2
      */
     @RequestMapping("/informmember")
     @ResponseBody
     public Map<String, Object> informMember(@RequestBody Map<String, String> map) {
         Map<String, Object> resultMap = new HashMap<>();
-        int activityId= Integer.parseInt(map.get("activityId"));
+        int activityId = Integer.parseInt(map.get("activityId"));
         List<User> userList = sponsorService.informMember(activityId);
-        if(userList != null) {
-            resultMap.put("success","success");
+        if (userList != null) {
+            resultMap.put("success", "success");
             resultMap.put("userList", userList);
             return resultMap;
         } else {
-            resultMap.put("success","error");
+            resultMap.put("success", "error");
             return resultMap;
         }
-
     }
 
 }

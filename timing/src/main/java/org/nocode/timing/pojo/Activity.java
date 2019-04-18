@@ -4,11 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * @Author HanZhao
- * @Description 对应activity表
- * @Date 2019/4/12
+ * @Author HanZhao and PanLei
+ * @Description 对应activity表的实体类
+ * @Date 2019/4/18
  */
 public class Activity {
+
     private Integer activityId;
 
     private String activityName;
@@ -45,6 +46,7 @@ public class Activity {
         this.activityName = activityName == null ? null : activityName.trim();
     }
 
+    // 时间类型需要转换
     public String getActivityStart() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.format(activityStart);
@@ -54,6 +56,7 @@ public class Activity {
         this.activityStart = activityStart;
     }
 
+    // 时间类型需要转换
     public String getActivityEnd() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.format(activityEnd);
@@ -110,4 +113,5 @@ public class Activity {
     public void setSponsorId(String sponsorId) {
         this.sponsorId = sponsorId == null ? null : sponsorId.trim();
     }
+
 }

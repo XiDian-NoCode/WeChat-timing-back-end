@@ -8,7 +8,7 @@ import java.net.URLConnection;
 /**
  * @Author HanZhao
  * @Description 获取openid和session_key
- * @Date 2019/4/12
+ * @Date 2019/4/18
  */
 public class GetOpenIdUtil {
 

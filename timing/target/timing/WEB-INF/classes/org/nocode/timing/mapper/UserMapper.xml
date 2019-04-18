@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.nocode.timing.mapper.UserMapper">
-    <!-- User queryUserById(); -->
-    <select id="queryUserById" parameterType="String" resultType="User">
-        SELECT
-        `user_id`,`user_name`,`user_img`
-        FROM `user`
-        WHERE `user_id` = #{userId}
-
-    <!--韩钊-->
+    <!--int insert(User user);-->
     <insert id="insert" parameterType="org.nocode.timing.pojo.User">
         INSERT INTO user (user_id, user_name, user_img)
         VALUES (#{userId}, #{userName}, #{userImg});
     </insert>
 
+    <!--User selectByPrimaryKey(String userId);-->
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="org.nocode.timing.pojo.User">
         SELECT *
         FROM user
         WHERE user_id = #{userId}
     </select>
 
+    <!-- User queryUserById(); -->
+    <select id="queryUserById" parameterType="String" resultType="User">
+        SELECT `user_id`,
+               `user_name`,
+               `user_img`
+        FROM `user`
+        WHERE `user_id` = #{userId}
+    </select>
 </mapper>
