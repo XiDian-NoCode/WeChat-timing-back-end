@@ -1,5 +1,6 @@
 package org.nocode.timing.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.nocode.timing.pojo.Activity;
 
 import java.util.List;
@@ -16,6 +17,9 @@ public interface ActivityMapper {
 
     // 通过用户id查找用户发起的活动
     List<Activity> selectByUserId(String userId);
+
+    // 通过活动id查找所有的活动
+    List<Activity> selectUserIdsByActivityIds(@Param("activityIds") List<Integer> activityIds);
 
     // 通过活动id查找活动
     Activity selectByPrimaryKey(Integer activityId);

@@ -18,6 +18,12 @@ public interface UserActivityMapper {
     // 通过用户id和活动id查找用户参与的活动
     UserActivity selectByUserIdAndActivityID(@Param("userId") String userId, @Param("activityId") Integer activityId);
 
+    // 通过分表活动id查找活动
+    UserActivity selectByPrimaryKey(Integer userActivityId);
+
+    // 通过活动id查找
+    List<String> selectByActivityID(Integer activityId);
+
     // 添加用户活动：分表
     int insertUserActivity(UserActivity userActivity);
 

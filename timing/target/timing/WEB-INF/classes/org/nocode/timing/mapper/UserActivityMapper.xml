@@ -16,6 +16,21 @@
           AND activity_id = #{activityId}
     </select>
 
+    <!--UserActivity selectByPrimaryKey(Integer userActivityId);-->
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="org.nocode.timing.pojo.UserActivity">
+        SELECT *
+        FROM user_activity
+        WHERE user_activity_id = #{userActivityId}
+    </select>
+
+    <!--List<String> selectByActivityID(Integer activityId);-->
+    <select id="selectByActivityID" resultType="java.lang.String">
+        SELECT user_id
+        FROM user_activity
+        WHERE activity_id = #{activityId}
+          AND state >= 1
+    </select>
+
     <!-- int insertUserActivity(UserActivity userActivity); -->
     <insert id="insertUserActivity" useGeneratedKeys="true" keyColumn="user_activity_id" keyProperty="userActivityId"
             parameterType="UserActivity">

@@ -1,7 +1,6 @@
 package org.nocode.timing.controller;
 
 import org.nocode.timing.pojo.Activity;
-import org.nocode.timing.pojo.UserActivity;
 import org.nocode.timing.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -74,7 +73,7 @@ public class UserController {
     // 查看我参与的活动
     @RequestMapping(value = "/viewJoinActivity")
     @ResponseBody
-    public List<UserActivity> viewJoinActivity(@RequestBody Map map) {
+    public List<Map> viewJoinActivity(@RequestBody Map map) {
         return userServiceImpl.viewJoinActivity(map.get("userId").toString());
     }
 
@@ -88,25 +87,8 @@ public class UserController {
     // 查看某个活动细节
     @RequestMapping(value = "/viewActivityDetail")
     @ResponseBody
-    public Activity viewActivityDetail(@RequestBody Map map) {
-        return userServiceImpl.viewActivityDetail(Integer.parseInt(map.get("activityId").toString()));
+    public Object viewActivityDetail(@RequestBody Map map) {
+        return userServiceImpl.viewActivityDetail((Boolean) map.get("isInvite"), (String) map.get("openid"), (Boolean) map.get("isSponsor"), Integer.parseInt(map.get("Id").toString()));
     }
 
-    // 点击邀请链接
-    @RequestMapping(value = "/clickInviteLink")
-    @ResponseBody
-    public Object clickInviteLink(@RequestBody Map map) throws Exception {
-        String code = (String) map.get("code");
-        String encryptedData = (String) map.get("encryptedData");
-        String iv = (String) map.get("iv");
-        Integer activityId = Integer.parseInt(map.get("activityId").toString());
-        // 登录凭证不能为空
-        if (code == null || code.length() == 0) {
-            map = new HashMap();
-            map.put("status", 0);
-            map.put("msg", "code不能为空");
-            return map;
-        }
-        return userServiceImpl.clickInviteLink(code, encryptedData, iv, activityId);
-    }
 }

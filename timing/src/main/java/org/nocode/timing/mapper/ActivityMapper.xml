@@ -18,6 +18,16 @@
         WHERE sponsor_id = #{userId}
     </select>
 
+    <!--List<Activity> selectUserIdsByActivityIds(@Param("activityIds") List<Integer> activityIds);-->
+    <select id="selectUserIdsByActivityIds" resultType="org.nocode.timing.pojo.Activity">
+        SELECT *
+        FROM activity
+        WHERE activity_id IN
+        <foreach collection="activityIds" item="activityId" open="(" close=")" separator=",">
+            #{activityId}
+        </foreach>
+    </select>
+
     <!--Activity selectByPrimaryKey(Integer activityId);-->
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="org.nocode.timing.pojo.Activity">
         SELECT *

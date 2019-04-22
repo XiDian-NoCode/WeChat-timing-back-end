@@ -1,9 +1,9 @@
 package org.nocode.timing.service;
 
 import org.nocode.timing.pojo.Activity;
-import org.nocode.timing.pojo.UserActivity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author HanZhao
@@ -19,15 +19,12 @@ public interface UserService {
     Integer createActivity(String activityName, String activityStart, String activityEnd, String useId) throws Exception;
 
     // 查看我参与的活动
-    List<UserActivity> viewJoinActivity(String userId);
+    List<Map> viewJoinActivity(String userId);
 
     // 查看我发起的活动
     List<Activity> viewSponsorActivity(String userId);
 
-    // 查看某个活动细节
-    Activity viewActivityDetail(Integer activityId);
-
-    // 点击邀请链接
-    Object clickInviteLink(String code, String encryptedData, String iv, Integer activityId) throws Exception;
+    // 查看某个活动细节，这里需要考虑多种情况，1.从邀请链接点击进入，2.从我的活动点击进入
+    Object viewActivityDetail(Boolean isInvite, String openid, Boolean isSponsor, Integer Id);
 
 }

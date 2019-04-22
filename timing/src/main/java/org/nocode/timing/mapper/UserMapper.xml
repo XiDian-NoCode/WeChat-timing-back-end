@@ -14,6 +14,16 @@
         WHERE user_id = #{userId}
     </select>
 
+    <!--List<String> selectUsersByPrimaryKey(List<String> userIds);-->
+    <select id="selectUsersByPrimaryKey" parameterType="java.util.List" resultType="org.nocode.timing.pojo.User">
+        SELECT *
+        FROM user
+        WHERE user_id IN
+        <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+    </select>
+
     <!-- User queryUserById(); -->
     <select id="queryUserById" parameterType="String" resultType="User">
         SELECT `user_id`,
