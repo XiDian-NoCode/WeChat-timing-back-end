@@ -26,10 +26,27 @@
 
     <!-- User queryUserById(); -->
     <select id="queryUserById" parameterType="String" resultType="User">
-        SELECT `user_id`,
-               `user_name`,
-               `user_img`
+        SELECT *
         FROM `user`
         WHERE `user_id` = #{userId}
     </select>
+
+    <!--int updateByPrimaryKey(@Param("openid") String openid, @Param("formid") String formid);-->
+    <update id="updateByPrimaryKey">
+        UPDATE `user`
+        <set>
+            <if test="formid!=null">user_form_id=#{formid}</if>
+        </set>
+        WHERE user_id=#{openid}
+    </update>
+
+    <!--int updateInfoById(@Param("openid") String openid, @Param("nickName") String nickName, @Param("avatarUrl") String avatarUrl);-->
+    <update id="updateInfoById">
+        UPDATE `user`
+        <set>
+            <if test="nickName!=null">user_name=#{nickName}</if>
+            <if test="avatarUrl!=null">user_img=#{avatarUrl}</if>
+        </set>
+        WHERE user_id=#{openid}
+    </update>
 </mapper>

@@ -18,6 +18,8 @@ public class Activity {
 
     private Date activityEnd;
 
+    private String activityLocation;
+
     private String activityTime;
 
     private Byte activityState;
@@ -29,6 +31,8 @@ public class Activity {
     private Byte schedule;
 
     private String sponsorId;
+
+    private String sponsorName;
 
     public Integer getActivityId() {
         return activityId;
@@ -74,6 +78,14 @@ public class Activity {
         this.activityTime = activityTime == null ? null : activityTime.trim();
     }
 
+    public String getActivityLocation() {
+        return activityLocation;
+    }
+
+    public void setActivityLocation(String activityLocation) {
+        this.activityLocation = activityLocation;
+    }
+
     public Byte getActivityState() {
         return activityState;
     }
@@ -112,6 +124,14 @@ public class Activity {
 
     public void setSponsorId(String sponsorId) {
         this.sponsorId = sponsorId == null ? null : sponsorId.trim();
+    }
+
+    public String getSponsorName() {
+        return sponsorName;
+    }
+
+    public void setSponsorName(String sponsorName) {
+        this.sponsorName = sponsorName;
     }
 
 }

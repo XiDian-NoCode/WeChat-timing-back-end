@@ -25,9 +25,6 @@ import java.util.Map;
 @Service("userServiceImpl")
 public class UserServiceImpl implements UserService {
 
-    public static final String APPID = "wx0885230cd5c5837d";
-    public static final String SECRET = "5dabd06fceb7c6cd07bd437fa8c07269";
-
     private UserMapper userMapper;
     private ActivityMapper activityMapper;
     private UserActivityMapper userActivityMapper;
@@ -47,39 +44,45 @@ public class UserServiceImpl implements UserService {
         this.userActivityMapper = userActivityMapper;
     }
 
+    /**
+     * @param code
+     * @param encryptedData
+     * @param iv
+     * @return openid
+     * 此处需要调用微信服务器
+     * 首先使用code可以得到openid和session_key
+     * 然后先用openid查询数据库中是否已存在该用户,存在的话检查其昵称和头像有没有改变
+     * 如果不存在，则还需使用session_key、encryptedData、iv来解密用户信息，得到用户昵称和头像，目前暂时需要这两个信息
+     */
     @Override
     public String login(String code, String encryptedData, String iv) throws IOException {
 
-        GetOpenIdUtil getOpenId = new GetOpenIdUtil();
         // 调用访问微信服务器工具方法，传入三个参数获取带有openid、session_key的json字符串
-        String jsonId = getOpenId.getOpenId(APPID, code, SECRET);
+        String jsonId = GetOpenIdUtil.getOpenId(code);
         System.out.println(jsonId);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = mapper.readTree(jsonId);
         // 从json字符串获取openid和session_key
         String openid = mapper.writeValueAsString(rootNode.path("openid")).replaceAll("\"", "");
+        String session_key = mapper.writeValueAsString(rootNode.path("session_key"));
+        // 得到用户信息
+        String result = AesCbcUtil.decrypt(encryptedData, session_key, iv, "UTF-8");
+        rootNode = mapper.readTree(result);
+        String nickName = mapper.writeValueAsString(rootNode.path("nickName")).replaceAll("\"", "");
+        String avatarUrl = mapper.writeValueAsString(rootNode.path("avatarUrl")).replaceAll("\"", "");
         // 数据库查询用户是否已经存在
-        if (userMapper.selectByPrimaryKey(openid) == null) {
-            // 如果用户不存在，获取session_key
-            String session_key = mapper.writeValueAsString(rootNode.path("session_key"));
-            try {
-                // 得到用户信息
-                String result = AesCbcUtil.decrypt(encryptedData, session_key, iv, "UTF-8");
-                // 存入数据库
-                if (null != result && result.length() > 0) {
-                    User user = new User();
-                    rootNode = mapper.readTree(result);
-                    user.setUserId(openid);
-                    user.setUserName(mapper.writeValueAsString(rootNode.path("nickName")).replaceAll("\"", ""));
-                    user.setUserImg(mapper.writeValueAsString(rootNode.path("avatarUrl")).replaceAll("\"", ""));
-                    // 插入数据库
-                    userMapper.insert(user);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        User user = userMapper.selectByPrimaryKey(openid);
+        // 如果用户不存在，用户信息存入数据库
+        if (user == null) {
+            user = new User();
+            user.setUserId(openid);
+            user.setUserName(nickName);
+            user.setUserImg(avatarUrl);
+            // 插入数据库
+            userMapper.insert(user);
+        } else if (!nickName.equals(user.getUserName()) || !avatarUrl.equals(user.getUserImg())) {// 如果昵称改变或者头像改变
+            userMapper.updateInfoById(openid, nickName, avatarUrl);
         }
-        // 如果用户已经存在，直接返回id
         return openid;
     }
 
@@ -93,31 +96,35 @@ public class UserServiceImpl implements UserService {
         activity.setActivityStart(sdf.parse(activityStart));
         activity.setActivityEnd(sdf.parse(activityEnd));
         activity.setSponsorId(sponsorId);
+        activity.setSponsorName(userMapper.selectByPrimaryKey(sponsorId).getUserName());
         activityMapper.insert(activity);
         // 返回活动ID
         return activity.getActivityId();
     }
 
+    /**
+     * @param userId
+     * @return 活动列表
+     * 由于分表中没有活动名，发起人昵称，因此，查看我参与的活动时需要先查询分表，然后用分表中的活动id在总表中查询活动名和发起人昵称
+     */
     @Override
     public List<Map> viewJoinActivity(String userId) {
+        List<Map> maps = new ArrayList<>();
         List<UserActivity> userActivities = userActivityMapper.selectByUserId(userId);
+        // 没有我参与的活动
+        if (userActivities == null || userActivities.size() == 0) {
+            return maps;
+        }
         List<Integer> activityIds = new ArrayList<>();
         for (int i = 0; i < userActivities.size(); i++) {
             activityIds.add(userActivities.get(i).getActivityId());
         }
         List<Activity> activities = activityMapper.selectUserIdsByActivityIds(activityIds);
-        List<String> userIds = new ArrayList<>();
-        for (int i = 0; i < activities.size(); i++) {
-            userIds.add(activities.get(i).getSponsorId());
-        }
-        List<User> users = userMapper.selectUsersByPrimaryKey(userIds);
-
-        List<Map> maps = new ArrayList<>();
 
         for (int i = 0; i < userActivities.size(); i++) {
             Map map = new HashMap();
             map.put("activityName", activities.get(i).getActivityName());
-            map.put("sponsorName", users.get(i).getUserName());
+            map.put("sponsorName", activities.get(i).getSponsorName());
             map.put("userActivity", userActivities.get(i));
             maps.add(map);
         }
@@ -129,6 +136,17 @@ public class UserServiceImpl implements UserService {
         return activityMapper.selectByUserId(userId);
     }
 
+    /**
+     * @param openid
+     * @param Id
+     * @param isSponsor
+     * @param isInvite
+     * @return 发起人和参与者返回的不全一样
+     * 情况1：发起人，直接返回总表的信息，还需返回所有参与者的头像，因为显示数量限制，只返回4个头像
+     * 情况2：参与者：
+     * * * 情况1：从邀请链接第一次点击进入，需要在分表中先插入一条数据，然后返回分表的信息+总表的一部分信息
+     * * * 情况2：从查看我的活动点击进入，说明不是第一次进入，直接返回分表的信息+总表的一部分信息
+     */
     @Override
     public Object viewActivityDetail(Boolean isInvite, String openid, Boolean isSponsor, Integer Id) {
         Map map = new HashMap<>();
@@ -139,8 +157,13 @@ public class UserServiceImpl implements UserService {
             if (userIds != null && userIds.size() != 0) {
                 List<User> users = userMapper.selectUsersByPrimaryKey(userIds);
                 List<String> imgs = new ArrayList<>();
-                for (User user : users) {
-                    imgs.add(user.getUserImg());
+                // 显示四个头像
+                for (int i = 0; i < users.size(); i++) {
+                    if (i < 4) {
+                        imgs.add(users.get(i).getUserImg());
+                    } else {
+                        break;
+                    }
                 }
                 map.put("imgs", imgs);
             } else {
@@ -152,8 +175,6 @@ public class UserServiceImpl implements UserService {
             if (isInvite) {
                 // 如果是从邀请链接进去，那么id肯定是总表id，所以去总表中查询对应活动信息
                 Activity activity = activityMapper.selectByPrimaryKey(Id);
-                String userName = userMapper.selectByPrimaryKey(activity.getSponsorId()).getUserName();
-                map.put("sponsorName", userName);
                 // 如果该活动已经完成，直接返回总表信息
                 if (activity.getActivityState() >= 1) {
                     map.put("activity", activity);
@@ -168,30 +189,32 @@ public class UserServiceImpl implements UserService {
                         userActivity.setState(b);
                         userActivityMapper.insertUserActivity(userActivity); // 向分表中插入一条数据
                     }
-                    map.put("activityTime", activity.getActivityTime());
-                    map.put("activityName", activity.getActivityName());
-                    map.put("activityStart", activity.getActivityStart());
-                    map.put("activityEnd", activity.getActivityEnd());
+                    putActivityInfo(activity, map);
                     map.put("userActivity", userActivity);
                 }
             } else {
                 // 如果是正常查看我参与的活动，Id是分表的id
                 UserActivity userActivity = userActivityMapper.selectByPrimaryKey(Id);
                 Activity activity = activityMapper.selectByPrimaryKey(userActivity.getActivityId());
-                String userName = userMapper.selectByPrimaryKey(activity.getSponsorId()).getUserName();
-                map.put("sponsorName", userName);
                 if (userActivity.getState() >= 2) {// 如果该活动已经完成，那么返回总表的信息
                     map.put("activity", activity);
                 } else {// 如果该活动没有完成，返回分表信息
-                    map.put("activityTime", activity.getActivityTime());
-                    map.put("activityName", activity.getActivityName());
-                    map.put("activityStart", activity.getActivityStart());
-                    map.put("activityEnd", activity.getActivityEnd());
+                    putActivityInfo(activity, map);
                     map.put("userActivity", userActivity);
                 }
             }
         }
         return map;
+    }
+
+    private void putActivityInfo(Activity activity, Map map) {
+        map.put("sponsorName", activity.getSponsorName());
+        map.put("state", activity.getActivityState());
+        map.put("activityTime", activity.getActivityTime());
+        map.put("activityLocation", activity.getActivityLocation());
+        map.put("activityName", activity.getActivityName());
+        map.put("activityStart", activity.getActivityStart());
+        map.put("activityEnd", activity.getActivityEnd());
     }
 
 }

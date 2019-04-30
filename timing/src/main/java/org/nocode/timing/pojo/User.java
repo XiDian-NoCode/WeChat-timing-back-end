@@ -13,6 +13,8 @@ public class User {
 
     private String userImg;
 
+    private String userFormId;
+
     public String getUserId() {
         return userId;
     }
@@ -35,6 +37,14 @@ public class User {
 
     public void setUserImg(String userImg) {
         this.userImg = userImg == null ? null : userImg.trim();
+    }
+
+    public String getUserFormId() {
+        return userFormId;
+    }
+
+    public void setUserFormId(String userFormId) {
+        this.userFormId = userFormId;
     }
 
 }

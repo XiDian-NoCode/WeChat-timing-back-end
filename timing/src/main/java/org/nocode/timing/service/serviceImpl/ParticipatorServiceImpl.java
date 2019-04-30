@@ -2,9 +2,10 @@ package org.nocode.timing.service.serviceImpl;
 
 import org.nocode.timing.mapper.ActivityMapper;
 import org.nocode.timing.mapper.UserActivityMapper;
+import org.nocode.timing.mapper.UserMapper;
 import org.nocode.timing.pojo.Activity;
 import org.nocode.timing.pojo.UserActivity;
-import org.nocode.timing.service.ParticipateService;
+import org.nocode.timing.service.ParticipatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,13 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
-@Service
-public class ParticipateServiceImpl implements ParticipateService {
+@Service("participatorServiceImpl")
+public class ParticipatorServiceImpl implements ParticipatorService {
 
     @Autowired
     private UserActivityMapper userActivityMapper;
     @Autowired
     private ActivityMapper activityMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * @param userActivityId
@@ -31,7 +34,7 @@ public class ParticipateServiceImpl implements ParticipateService {
      */
     @Override
     @Transactional
-    public int commitMyTime(int userActivityId, String userBusyTime) {
+    public int commitMyTime(int userActivityId, String userBusyTime, String openid, String formid) {
         // 更新分表数据，提交自己的时间
         UserActivity userActivity = new UserActivity();
         userActivity.setUserActivityId(userActivityId); // 设置分表查询条件
@@ -48,6 +51,10 @@ public class ParticipateServiceImpl implements ParticipateService {
         userActivity = userActivityList.get(0);
         // 根据 userActivity 中的 activityId 在总表中更新数据
         int result = operatorActivityForCommitMyTime(userActivity.getActivityId(), userBusyTime);
+
+        // 更新user表中的formid
+        userMapper.updateByPrimaryKey(openid, formid);
+
         return result;
     }
 
@@ -76,7 +83,7 @@ public class ParticipateServiceImpl implements ParticipateService {
         }
         for (int i = 0; i < one_busys.length; i++) {
             // 分表位置为 1 ,则总表对应位置 加 1
-            if (one_busys[i]=='1') {
+            if (one_busys[i] == '1') {
                 Integer allNum = Integer.parseInt(all_busys[i]);
                 allNum++;
                 all_busys[i] = String.valueOf(allNum);

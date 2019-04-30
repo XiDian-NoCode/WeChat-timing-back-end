@@ -1,7 +1,6 @@
 package org.nocode.timing.controller;
 
-import org.nocode.timing.service.ParticipateService;
-import org.nocode.timing.util.BusyTimeUtil;
+import org.nocode.timing.service.ParticipatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,10 +16,11 @@ import java.util.Map;
  * @Date 2019/4/18
  */
 @Controller
-@RequestMapping("/participatecontroller")
-public class ParticipateController {
+@RequestMapping("/participator")
+public class ParticipatorController {
+
     @Autowired
-    private ParticipateService participateService;
+    private ParticipatorService participateService;
 
     /**
      * @return 功能: 参与人 提交自己的时间安排
@@ -35,15 +34,18 @@ public class ParticipateController {
      */
     @RequestMapping(value = "/commitmytime")
     @ResponseBody
-    public Map<String, String> commitMyTime(@RequestBody Map<String, Object> map) {
+    public Map commitMyTime(@RequestBody Map map) {
         Map<String, String> resultMap = new HashMap<>();
         int userActivityId = (int) map.get("userActivityId");
-        // 格式是： 010110...
+        // 格式是01010……
         String userBusyTime = (String) map.get("userBusyTime");
-        // 将List转为 0,1,1,1,0,0格式
-//        String userBusyTime = BusyTimeUtil.convertListToString(userBusyTimeList);
         // result = 0(失败),1(成功)
-        int result = participateService.commitMyTime(userActivityId, userBusyTime);
+
+        // formid存入数据库，时效7天，只能用一次
+        String openid = (String) map.get("openid");
+        String formid = (String) map.get("formid");
+        int result = participateService.commitMyTime(userActivityId, userBusyTime, openid, formid);
+
         if (result <= 0) {
             resultMap.put("success", "error");
             return resultMap;
@@ -52,4 +54,5 @@ public class ParticipateController {
             return resultMap;
         }
     }
+
 }

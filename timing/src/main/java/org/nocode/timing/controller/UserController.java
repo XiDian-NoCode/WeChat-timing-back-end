@@ -16,6 +16,7 @@ import java.util.Map;
  * @Date 2019/4/18
  */
 @Controller
+@RequestMapping("/user")
 public class UserController {
 
     private UserService userServiceImpl;
@@ -50,20 +51,19 @@ public class UserController {
     }
 
     // 创建活动，返回活动ID
-    @RequestMapping(value = "/createActivity")
+    @RequestMapping(value = "/createactivity")
     @ResponseBody
     public Map createActivity(@RequestBody Map map) throws Exception {
         String activityName = (String) map.get("activityName");
         String activityStart = map.get("activityStart").toString();
         String activityEnd = map.get("activityEnd").toString();
         String sponsorId = map.get("sponsorId").toString();
-        map = new HashMap();
         int state = -1;
         if (activityName == null || activityName.length() == 0) {
             map.put("activityId", state);
             return map;
         }
-        // 告诉前端创建成功
+        // 创建成功
         state = userServiceImpl.createActivity(activityName, activityStart, activityEnd, sponsorId);
         // 用map存自动转换成json格式
         map.put("activityId", state);
@@ -71,21 +71,21 @@ public class UserController {
     }
 
     // 查看我参与的活动
-    @RequestMapping(value = "/viewJoinActivity")
+    @RequestMapping(value = "/viewjoinactivity")
     @ResponseBody
     public List<Map> viewJoinActivity(@RequestBody Map map) {
         return userServiceImpl.viewJoinActivity(map.get("userId").toString());
     }
 
     // 查看我发起的活动
-    @RequestMapping(value = "/viewSponsorActivity")
+    @RequestMapping(value = "/viewsponsoractivity")
     @ResponseBody
     public List<Activity> viewSponsorActivity(@RequestBody Map map) {
         return userServiceImpl.viewSponsorActivity(map.get("userId").toString());
     }
 
     // 查看某个活动细节
-    @RequestMapping(value = "/viewActivityDetail")
+    @RequestMapping(value = "/viewactivitydetail")
     @ResponseBody
     public Object viewActivityDetail(@RequestBody Map map) {
         return userServiceImpl.viewActivityDetail((Boolean) map.get("isInvite"), (String) map.get("openid"), (Boolean) map.get("isSponsor"), Integer.parseInt(map.get("Id").toString()));

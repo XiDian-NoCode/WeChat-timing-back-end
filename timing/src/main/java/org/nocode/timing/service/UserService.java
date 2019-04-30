@@ -18,7 +18,7 @@ public interface UserService {
     // 创建活动
     Integer createActivity(String activityName, String activityStart, String activityEnd, String useId) throws Exception;
 
-    // 查看我参与的活动
+    // 查看邀请我的活动
     List<Map> viewJoinActivity(String userId);
 
     // 查看我发起的活动

@@ -24,4 +24,10 @@ public interface UserMapper {
     // 根据用户id查询user
     User queryUserById(String userId);
 
+    // 更新用户formid
+    int updateByPrimaryKey(@Param("openid") String openid, @Param("formid") String formid);
+
+    // 更新昵称或者头像
+    int updateInfoById(@Param("openid") String openid, @Param("nickName") String nickName, @Param("avatarUrl") String avatarUrl);
+
 }

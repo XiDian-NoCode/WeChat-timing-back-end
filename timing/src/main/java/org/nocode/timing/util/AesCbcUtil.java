@@ -10,13 +10,13 @@ import java.security.*;
 
 /**
  * @Author HanZhao
- * @Description 解密用户信息
+ * @Description 小程序解密用户信息
  * @Date 2019/4/18
  */
 public class AesCbcUtil {
 
     static {
-        //BouncyCastle是一个开源的加解密解决方案，主页在http://www.bouncycastle.org/
+        // BouncyCastle是一个开源的加解密解决方案，主页在http://www.bouncycastle.org/
         Security.addProvider(new BouncyCastleProvider());
     }
 
@@ -59,4 +59,5 @@ public class AesCbcUtil {
         }
         return null;
     }
+
 }

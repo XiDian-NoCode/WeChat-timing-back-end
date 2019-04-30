@@ -13,8 +13,8 @@ public interface SponsorService {
 
     List<User> checkMember(int activityId, String userId, int index, int num);
 
-    String commitFinalTime(int activityId, String activityTime);
+    String commitFinalTime(int activityId, String activityTime, String activityLocation);
 
-    List<User> informMember(int activityId);
+    String informMember(int activityId) throws Exception;
 
 }

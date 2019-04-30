@@ -1,5 +1,7 @@
 package org.nocode.timing.service.serviceImpl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.nocode.timing.mapper.ActivityMapper;
 import org.nocode.timing.mapper.UserActivityMapper;
 import org.nocode.timing.mapper.UserMapper;
@@ -7,14 +9,19 @@ import org.nocode.timing.pojo.Activity;
 import org.nocode.timing.pojo.User;
 import org.nocode.timing.pojo.UserActivity;
 import org.nocode.timing.service.SponsorService;
+import org.nocode.timing.util.SendTemplateMessageUtil;
+import org.nocode.timing.util.TemplateData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Service
+@Service("sponsorServiceImpl")
 public class SponsorServiceImpl implements SponsorService {
 
     @Autowired
@@ -40,7 +47,7 @@ public class SponsorServiceImpl implements SponsorService {
     public List<User> checkMember(int activityId, String sponsorId, int index, int num) {
         UserActivity userActivity = new UserActivity();
         userActivity.setActivityId(activityId);
-        byte state = 2;
+        byte state = 1;
         userActivity.setState(state);
         userActivity.setIsJoin(true);
         List<UserActivity> userActivityList = userActivityMapper.queryUserActivity(userActivity);
@@ -54,6 +61,7 @@ public class SponsorServiceImpl implements SponsorService {
     /**
      * @param activityId:总表活动id
      * @param activityTime:所选活动时间的单元格,可以多个
+     * @param activityLocation:活动地点
      * @return 流程:
      * 根据 `activityId` 在总表中 更新 `activity_time` 和 `activity_state`=1
      * 然后在 分表 中,根据 `activity_id` + `is_join`=1 更新其 `state`=2
@@ -61,11 +69,12 @@ public class SponsorServiceImpl implements SponsorService {
      */
     @Override
     @Transactional
-    public String commitFinalTime(int activityId, String activityTime) {
+    public String commitFinalTime(int activityId, String activityTime, String activityLocation) {
         // 更新总表
         Activity activity = new Activity();
         activity.setActivityId(activityId);
         activity.setActivityTime(activityTime);
+        activity.setActivityLocation(activityLocation);
         byte state = 1;
         activity.setActivityState(state);
         int effectNum = activityMapper.updateActivityTimeByActivityId(activity);
@@ -86,10 +95,11 @@ public class SponsorServiceImpl implements SponsorService {
      * service层:
      * 根据 activityId 查询 分表 中的数据,还要求 `is_join`=1, `state`=2
      * 然后 根据 userId 获取到指定的用户
+     * 最后需要调用微信服务器，向所有参与者推送模板消息
      */
     @Override
     @Transactional
-    public List<User> informMember(int activityId) {
+    public String informMember(int activityId) throws IOException {
         UserActivity userActivity = new UserActivity();
         userActivity.setActivityId(activityId);
         userActivity.setIsJoin(true);
@@ -105,7 +115,30 @@ public class SponsorServiceImpl implements SponsorService {
             // 获取所有的参与者
             allJoinUser(u.getUserId(), userList);
         }
-        return userList;
+        // ================================================================此处增加微信小程序推送消息通知:2019-04-24
+        // 获取活动信息
+        Activity activity = activityMapper.selectByPrimaryKey(activityId);
+        // 构造模板消息
+        Map<String, TemplateData> map = new HashMap<>();
+        map.put("keyword1", new TemplateData(activity.getActivityName()));
+        map.put("keyword2", new TemplateData(activity.getActivityTime()));
+        map.put("keyword3", new TemplateData(activity.getActivityLocation()));
+        map.put("keyword4", new TemplateData(activity.getActivityMembers().toString()));
+        map.put("keyword5", new TemplateData(activity.getSponsorName()));
+        // 首先获取access_token，有效期两个小时
+        String accessToken = SendTemplateMessageUtil.getAccessToken().replaceAll("\"", "");
+        // 向所有参与成员推送消息通知
+        int count = 0;
+        ObjectMapper mapper = new ObjectMapper();
+        for (User u : userList) {
+            JsonNode js = SendTemplateMessageUtil.sendTemplateMessage(accessToken, u.getUserId(), "5oTlrXvVw0TL-CsBI8AjeoH_XBEhsj3eG_o7eLB1bGY", "/pages/index/index", u.getUserFormId(), map);
+            // count 统计发送出成功的人数
+            if (mapper.writeValueAsString(js.path("errmsg")).replaceAll("\"", "").equals("ok")) {
+                count++;
+            }
+            System.out.println(js);
+        }
+        return count + "/" + userList.size();
     }
 
     private void allJoinUser(String userId, List<User> userList) {
@@ -139,11 +172,12 @@ public class SponsorServiceImpl implements SponsorService {
      * @param userList     根据 userBusyTime 以及 index 获得 具体单元格有事的人
      */
     private void checkBusyTime(String userBusyTime, String userId, int index, List<User> userList) {
-        String[] busys = userBusyTime.split(",");
-        String busy_index = busys[index];
-        if (busy_index.equals("1")) {
+        char[] busys = userBusyTime.toCharArray();
+        char busy_index = busys[index];
+        if (busy_index == '1') {
             User user = userMapper.queryUserById(userId);
             userList.add(user);
         }
     }
+
 }

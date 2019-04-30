@@ -7,8 +7,8 @@
             SELECT LAST_INSERT_ID()
         </selectKey>
 
-        INSERT INTO activity (activity_name, activity_start, activity_end,sponsor_id)
-        VALUES (#{activityName}, #{activityStart}, #{activityEnd},#{sponsorId});
+        INSERT INTO activity (activity_name, activity_start, activity_end, sponsor_id, sponsor_name)
+        VALUES (#{activityName}, #{activityStart}, #{activityEnd},#{sponsorId},#{sponsorName});
     </insert>
 
     <!--List<Activity> selectByUserId(String userId);-->

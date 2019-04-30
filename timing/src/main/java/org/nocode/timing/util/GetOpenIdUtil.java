@@ -7,16 +7,19 @@ import java.net.URLConnection;
 
 /**
  * @Author HanZhao
- * @Description 获取openid和session_key
+ * @Description 小程序获取openid和session_key
  * @Date 2019/4/18
  */
 public class GetOpenIdUtil {
 
-    public String getOpenId(String appid, String code, String secret) {
+    // appid和secret是开发者分别是小程序ID和小程序密钥，开发者通过微信公众平台-》设置-》开发设置就可以直接获取
+    private static final String APPID = "wx0885230cd5c5837d";
+    private static final String SECRET = "5dabd06fceb7c6cd07bd437fa8c07269";
+
+    public static String getOpenId(String code) {
         BufferedReader in = null;
-        // appid和secret是开发者分别是小程序ID和小程序密钥，开发者通过微信公众平台-》设置-》开发设置就可以直接获取，
         String url = "https://api.weixin.qq.com/sns/jscode2session?appid="
-                + appid + "&secret=" + secret + "&js_code=" + code + "&grant_type=authorization_code";
+                + APPID + "&secret=" + SECRET + "&js_code=" + code + "&grant_type=authorization_code";
         try {
             URL weChatUrl = new URL(url);
             // 打开和URL之间的连接
@@ -48,5 +51,6 @@ public class GetOpenIdUtil {
             }
         }
     }
+
 }
 

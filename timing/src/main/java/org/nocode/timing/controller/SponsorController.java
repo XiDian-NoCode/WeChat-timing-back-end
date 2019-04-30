@@ -20,22 +20,9 @@ import java.util.Map;
 @Controller
 @RequestMapping("/sponsor")
 public class SponsorController {
+
     @Autowired
     private SponsorService sponsorService;
-
-    /**
-     * inviteMember(先写成空的，看后续)
-     * informMember
-     * checkMember(查看某个活动中某一单元格参与的人)
-     * commitFinaltime（发起人提交活动时间)
-     */
-
-
-    @RequestMapping("/invitemember")
-    @ResponseBody
-    public String inviteMember() {
-        return null;
-    }
 
     /**
      * @param map : 接收json格式参数
@@ -53,14 +40,16 @@ public class SponsorController {
      */
     @RequestMapping("/checkmember")
     @ResponseBody
-    public List<User> checkMember(@RequestBody Map<String, String> map) {
-        int activityId = Integer.parseInt(map.get("activityId"));
-        String sponsorId = map.get("sponsorId");
-        int index = Integer.parseInt(map.get("index"));
-        int num = Integer.parseInt(map.get("num"));
+    public Map checkMember(@RequestBody Map map) {
+        int activityId = Integer.parseInt((String) map.get("activityId"));
+        String sponsorId = (String) map.get("sponsorId");
+        int index = Integer.parseInt((String) map.get("index"));
+        int num = Integer.parseInt((String) map.get("num"));
 
         List<User> userList = sponsorService.checkMember(activityId, sponsorId, index, num);
-        return userList;
+        Map<String, List<User>> userMap = new HashMap<>();
+        userMap.put("users", userList);
+        return userMap;
     }
 
     // 发起人确定活动时间，需要将总表状态改为已确定时间（1），对应的所有分表中 已提交未确定时间状态（1）改为已提交确定时间状态（2）
@@ -76,40 +65,31 @@ public class SponsorController {
      * 根据 `activityId` 在总表中 更新 `activity_time` 和 `activity_state`=1
      * 然后在 分表 中,根据 `activity_id` + `state`=1 + `is_join`=1 更新其 `state`=2
      * 根据 `activity_id` + `state`=0 + `is_join`=0 更新其 `state`=3
+     * 通知所有已经参与的成员
      * controller层:
-     * 调用 service 层方法,返回结果是否成功
+     * 调用 service 层方法,返回结果是否成功，返回通知成功的成员数量
      */
     @RequestMapping("/commitfinaltime")
     @ResponseBody
-    public Map<String, String> commitFinalTime(@RequestBody Map<String, String> map) {
+    public Map commitFinalTime(@RequestBody Map map) throws Exception {
         Map<String, String> resultMap = new HashMap<>();
-        int activityId = Integer.parseInt(map.get("activityId"));
-        String activityTime = map.get("activityTime");
-        String result = sponsorService.commitFinalTime(activityId, activityTime);
+        int activityId = Integer.parseInt((String) map.get("activityId"));
+        String activityTime = (String) map.get("activityTime");
+        String activityLocation = (String) map.get("activityLocation");
+        String result = sponsorService.commitFinalTime(activityId, activityTime, activityLocation);
         resultMap.put("success", result);
-        return resultMap;
-    }
-
-    /**
-     * @param map
-     * @return 流程:
-     * service层:
-     * 根据 activityId 查询 分表 中的数据,还要求 `is_join`=1, `state`=2
-     */
-    @RequestMapping("/informmember")
-    @ResponseBody
-    public Map<String, Object> informMember(@RequestBody Map<String, String> map) {
-        Map<String, Object> resultMap = new HashMap<>();
-        int activityId = Integer.parseInt(map.get("activityId"));
-        List<User> userList = sponsorService.informMember(activityId);
-        if (userList != null) {
-            resultMap.put("success", "success");
-            resultMap.put("userList", userList);
-            return resultMap;
+        // 如果提交成功，通知所有成员
+        if (resultMap.get("success").equals("success")) {
+            String count = sponsorService.informMember(activityId);
+            if (count == null) {
+                resultMap.put("count", "0");
+            } else {
+                resultMap.put("count", count);
+            }
         } else {
-            resultMap.put("success", "error");
-            return resultMap;
+            resultMap.put("count", "0");
         }
+        return resultMap;
     }
 
 }
