@@ -75,8 +75,7 @@ public class SponsorController {
         Map<String, String> resultMap = new HashMap<>();
         int activityId = Integer.parseInt((String) map.get("activityId"));
         String activityTime = (String) map.get("activityTime");
-        String activityLocation = (String) map.get("activityLocation");
-        String result = sponsorService.commitFinalTime(activityId, activityTime, activityLocation);
+        String result = sponsorService.commitFinalTime(activityId, activityTime);
         resultMap.put("success", result);
         // 如果提交成功，通知所有成员
         if (resultMap.get("success").equals("success")) {

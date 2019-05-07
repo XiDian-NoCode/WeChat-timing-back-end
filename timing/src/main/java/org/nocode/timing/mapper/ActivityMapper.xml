@@ -39,7 +39,6 @@
     <update id="updateActivityTimeByActivityId" parameterType="Activity">
         UPDATE `activity`
         <set>
-            <if test="activityLocation!=null">activity_location=#{activityLocation},</if>
             <if test="activityTime!=null">activity_time=#{activityTime},</if>
             <if test="activityState!=null">activity_state=#{activityState},</if>
             <if test="activityMembers!=null">activity_members=#{activityMembers},</if>

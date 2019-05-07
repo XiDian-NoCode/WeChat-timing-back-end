@@ -61,7 +61,6 @@ public class SponsorServiceImpl implements SponsorService {
     /**
      * @param activityId:总表活动id
      * @param activityTime:所选活动时间的单元格,可以多个
-     * @param activityLocation:活动地点
      * @return 流程:
      * 根据 `activityId` 在总表中 更新 `activity_time` 和 `activity_state`=1
      * 然后在 分表 中,根据 `activity_id` + `is_join`=1 更新其 `state`=2
@@ -69,12 +68,11 @@ public class SponsorServiceImpl implements SponsorService {
      */
     @Override
     @Transactional
-    public String commitFinalTime(int activityId, String activityTime, String activityLocation) {
+    public String commitFinalTime(int activityId, String activityTime) {
         // 更新总表
         Activity activity = new Activity();
         activity.setActivityId(activityId);
         activity.setActivityTime(activityTime);
-        activity.setActivityLocation(activityLocation);
         byte state = 1;
         activity.setActivityState(state);
         int effectNum = activityMapper.updateActivityTimeByActivityId(activity);
@@ -122,9 +120,8 @@ public class SponsorServiceImpl implements SponsorService {
         Map<String, TemplateData> map = new HashMap<>();
         map.put("keyword1", new TemplateData(activity.getActivityName()));
         map.put("keyword2", new TemplateData(activity.getActivityTime()));
-        map.put("keyword3", new TemplateData(activity.getActivityLocation()));
-        map.put("keyword4", new TemplateData(activity.getActivityMembers().toString()));
-        map.put("keyword5", new TemplateData(activity.getSponsorName()));
+        map.put("keyword3", new TemplateData(activity.getActivityMembers().toString()));
+        map.put("keyword4", new TemplateData(activity.getSponsorName()));
         // 首先获取access_token，有效期两个小时
         String accessToken = SendTemplateMessageUtil.getAccessToken().replaceAll("\"", "");
         // 向所有参与成员推送消息通知

@@ -211,7 +211,6 @@ public class UserServiceImpl implements UserService {
         map.put("sponsorName", activity.getSponsorName());
         map.put("state", activity.getActivityState());
         map.put("activityTime", activity.getActivityTime());
-        map.put("activityLocation", activity.getActivityLocation());
         map.put("activityName", activity.getActivityName());
         map.put("activityStart", activity.getActivityStart());
         map.put("activityEnd", activity.getActivityEnd());
